@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Portfolio</title>
+
+<link rel="stylesheet" href="/static/portfolio.css">
+
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="logo">
+        DEMO EXCHANGE
+    </div>
+
+    <div class="user">
+        👤 {{username}}
+    </div>
+</header>
+
+
+<main class="content">
+
+<h1>
+My Portfolio
+</h1>
+
+
+<div id="balance" class="card">
+Loading balance...
+</div>
+
+
+<div id="stocks" class="grid">
+Loading stocks...
+</div>
+
+
+</main>
+
+
+<script>
+
+fetch("/api/balance")
+.then(r=>r.json())
+.then(data=>{
+
+document.getElementById("balance").innerHTML =
+`
+<h2>Cash Balance</h2>
+<h1>$${Number(data.balance).toLocaleString()}</h1>
+`;
+
+});
+
+
+fetch("/api/portfolio")
+.then(r=>r.json())
+.then(data=>{
+
+let box=document.getElementById("stocks");
+
+box.innerHTML="";
+
+
+data.forEach(stock=>{
+
+box.innerHTML +=
+`
+<div class="card">
+
+<h2>${stock.symbol}</h2>
+
+<p>
+Shares:
+${stock.quantity}
+</p>
+
+<p>
+Buy price:
+$${stock.buy_price}
+</p>
+
+</div>
+`;
+
+});
+
+
+});
+
+
+</script>
+
+
+</body>
+</html>

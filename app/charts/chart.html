@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Stock Chart</title>
+
+<link rel="stylesheet" href="/charts/static/chart.css">
+
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+
+</head>
+
+
+<body>
+
+
+<div class="chart-box">
+
+
+    <h1 id="title">
+        AAPL
+    </h1>
+
+
+    <div class="price-box">
+
+        Current Price:
+
+        <span id="stock-price">
+            $0.00
+        </span>
+
+    </div>
+
+
+    <div id="chart"></div>
+
+
+
+    <div class="trade-box">
+
+
+        <h2>
+            Trade
+        </h2>
+
+
+
+        <label>
+            Quantity:
+        </label>
+
+
+        <input
+            id="quantity"
+            type="number"
+            value="1"
+            min="1"
+        >
+
+
+
+        <button onclick="buyStock()">
+
+            BUY
+
+        </button>
+
+
+
+        <p id="message"></p>
+
+
+    </div>
+
+
+</div>
+
+
+
+
+<script src="/charts/static/chart.js"></script>
+
+
+
+<script>
+
+
+function buyStock(){
+
+
+    const symbol =
+
+        document
+        .getElementById("title")
+        .innerText;
+
+
+
+    const quantity =
+
+        Number(
+            document
+            .getElementById("quantity")
+            .value
+        );
+
+
+
+    if(typeof currentPrice === "undefined" || currentPrice <= 0){
+
+        document
+        .getElementById("message")
+        .innerText =
+        "Price not loaded";
+
+
+        return;
+
+    }
+
+
+
+    fetch("/api/buy",{
+
+
+        method:"POST",
+
+
+        headers:{
+
+
+            "Content-Type":
+            "application/json"
+
+
+        },
+
+
+        body:JSON.stringify({
+
+
+            symbol:symbol,
+
+
+            quantity:quantity,
+
+
+            price:currentPrice
+
+
+        })
+
+
+    })
+
+
+    .then(response=>response.json())
+
+
+    .then(data=>{
+
+
+        document
+        .getElementById("message")
+        .innerText =
+
+        data.message || data.error;
+
+
+    })
+
+
+    .catch(error=>{
+
+
+        document
+        .getElementById("message")
+        .innerText =
+        "Trade error";
+
+
+        console.error(error);
+
+
+    });
+
+
+
+}
+
+
+
+</script>
+
+
+
+</body>
+
+</html>

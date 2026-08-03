@@ -1,0 +1,244 @@
+curl https://github.com/adanos-software/free-ticker-database/blob/main/data/listings.csv
+
+curl -L https://raw.githubusercontent.com/adanos-software/free-ticker-database/main/data/listings.csv -o listings.csv
+
+awk -F',' 'NR>1 {print $2}' listings.csv | sort -u > symbols2.txt
+
+
+ awk -F, '
+NR==1 {next}
+$4=="Stock" &&
+($3=="NASDAQ" || $3=="NYSE") &&
+$1 ~ /^[A-Z]{1,5}$/ {
+    print $1
+}' tickers.csv  
+
+
+
+
+
+python3 -m pip install flask werkzeug
+
+
+
+
+
+
+
+my-site/
+├── docker-compose.yml
+├── nginx.conf
+├── public/
+│   ├── index.html
+│   └── static/
+│       └── style.css
+└── app/
+    └── server.py
+
+
+
+
+
+sudo docker compose up -d
+
+
+
+
+http://localhost:8080
+
+
+
+sudo docker compose down
+
+sudo docker compose up -d --build
+
+
+sudo docker compose restart app
+
+
+
+
+
+
+
+
+
+
+
+
+################
+
+#למשוך  את  כל  הנתונים   וזה  עובר  על  הרשימהה  המקובץ symbols.txt
+cd date
+
+./list1.sh
+
+
+#לראות  קבצים  שהחזיר  רייק 
+cd output
+
+find . -type f -printf '%s %p\n' | awk '$1 < 1000' 
+
+#or to se  command to delit 
+
+find . -type f -printf '%s %p\n' | awk '$1 < 1000 {print "rm", $2}' 
+
+#todelite
+find . -type f -size -16k -delete
+
+
+
+
+
+ython3 import_json.py
+
+
+sqlite3 stocks.db   ".tables" 
+
+sqlite3 stocks.db "VACUUM;"
+
+sqlite3 stocks.db "PRAGMA integrity_check;"
+
+
+
+
+
+PRAGMA table_info(master_table);
+
+
+
+
+
+7z a -mx=9 stocks.db.7z stocks.db  
+
+
+zstd -19 stocks.db -o stocks.db.zst 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+sudo nano /etc/systemd/system/list3.service
+
+
+
+
+
+
+
+
+
+[Unit]
+Description=Run list3 script
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/qwe/Desktop/my-site/data
+ExecStart=/home/qwe/Desktop/my-site/data/list3.sh
+
+
+
+
+
+
+sudo nano /etc/systemd/system/list3.timer
+
+
+
+
+
+[Unit]
+Description=Run list3 every 12 hours
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=12h
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+
+
+
+
+
+
+
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now list3.timer
+
+
+
+
+
+
+
+
+
+systemctl list-timers | grep list3
+
+
+
+
+
+sudo systemctl start list3.service
+
+
+
+
+journalctl -u list3.service -f
+
+
+
+
+
+
+
+
+
+
+
+
+
+sudo apt install tor-geoipdb netcat-openbsd  
+
+
+
+
+sudo apt install xxd
+
+tor --hash-password mypassword
+
+sudo nano /etc/tor/torrc
+
+
+ControlPort 9051
+HashedControlPassword 16:XXXX....
+CookieAuthentication 0
+
+
+
+sudo systemctl restart tor
+
+
+echo -e 'AUTHENTICATE "mypassword"\r\nSIGNAL NEWNYM\r\nQUIT' | nc 127.0.0.1 9051
+
+
+250 OK
+250 OK
+221 closing connection
+
+

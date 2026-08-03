@@ -1,0 +1,217 @@
+/* =========================
+   NEWS PAGE
+========================= */
+
+body {
+
+    background: #0f172a;
+
+    color: white;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    margin: 0;
+
+}
+
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+
+    background: #020617;
+
+    padding: 20px 30px;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    border-bottom: 1px solid #1e293b;
+
+}
+
+
+
+/* =========================
+   NEWS GRID
+========================= */
+
+.news-container {
+
+    display: grid;
+
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(300px, 1fr)
+    );
+
+    gap: 20px;
+
+    padding: 30px;
+
+}
+
+
+
+/* =========================
+   NEWS CARD
+========================= */
+
+.news-card {
+
+    background: #1e293b;
+
+    border-radius: 15px;
+
+    padding: 22px;
+
+    box-shadow: 0 10px 25px rgba(
+        0,
+        0,
+        0,
+        0.25
+    );
+
+    transition: 0.3s ease;
+
+    border: 1px solid #334155;
+
+}
+
+
+
+.news-card:hover {
+
+    transform: translateY(-6px);
+
+    background: #263449;
+
+}
+
+
+
+/* =========================
+   TITLE
+========================= */
+
+.news-card h2 {
+
+    font-size: 20px;
+
+    line-height: 1.4;
+
+    margin-top: 0;
+
+    color: #f8fafc;
+
+}
+
+
+
+/* =========================
+   TEXT
+========================= */
+
+.news-card p {
+
+    color: #cbd5e1;
+
+    line-height: 1.6;
+
+    font-size: 15px;
+
+}
+
+
+
+/* =========================
+   LINK
+========================= */
+
+.news-card a {
+
+    display: inline-block;
+
+    margin-top: 15px;
+
+    color: #38bdf8;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+}
+
+
+
+.news-card a:hover {
+
+    color: #7dd3fc;
+
+    text-decoration: underline;
+
+}
+
+
+
+/* =========================
+   ERROR MESSAGE
+========================= */
+
+.news-error {
+
+    background: #7f1d1d;
+
+    color: #fecaca;
+
+    padding: 20px;
+
+    border-radius: 10px;
+
+    margin: 30px;
+
+    text-align: center;
+
+}
+
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px){
+
+
+    header {
+
+        font-size: 22px;
+
+        padding: 15px;
+
+    }
+
+
+
+    .news-container {
+
+        padding: 15px;
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+
+    .news-card h2 {
+
+        font-size: 18px;
+
+    }
+
+
+}

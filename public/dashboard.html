@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Demo Exchange</title>
+
+<link rel="stylesheet" href="/static/dashboard.css">
+
+</head>
+
+
+<body>
+
+<div id="stars"></div>
+<div id="stars2"></div>
+<div id="stars3"></div>
+
+<header class="topbar">
+
+<div class="logo">
+DEMO EXCHANGE
+</div>
+
+
+<input class="search" placeholder="Search stock...">
+
+
+<div class="user">
+
+<span>
+👤 {{username}}
+</span>
+
+
+<span>
+💰 <span id="topBalance">Loading...</span>
+</span>
+
+
+</div>
+
+</header>
+
+
+
+<div class="layout">
+
+
+
+<aside class="sidebar">
+
+
+<h3>
+MENU
+</h3>
+
+
+<button onclick="changeMenu('dashboard', this)">
+👤 Dashboard
+</button>
+
+
+<button onclick="window.location='/portfolio'">
+💰 Portfolio
+</button>
+
+<button onclick="changeMenu('market', this)">
+📈 Market
+</button>
+
+
+<button onclick="changeMenu('history', this)">
+📜 History
+</button>
+
+
+<button onclick="changeMenu('settings', this)">
+⚙ Settings
+</button>
+
+
+<a href="/logout">
+🚪 Logout
+</a>
+
+
+</aside>
+
+
+
+
+
+<aside class="stocks">
+
+
+<h3 id="subTitle"></h3>
+
+
+<div id="submenu"></div>
+
+
+</aside>
+
+
+
+
+
+
+<main class="content">
+
+
+<div id="page-content"></div>
+
+</main>
+
+
+
+
+
+
+<script>
+
+
+const menus = {
+
+
+dashboard:{
+
+title:"Dashboard",
+
+items:[]
+
+},
+
+
+
+
+
+portfolio:{
+title:"Portfolio",
+items:[
+"My Stocks",
+"Holdings",
+"Orders",
+"Profit / Loss"
+]
+},
+
+
+
+market:{
+
+title:"Market",
+
+items:[
+"Stocks",
+"Crypto",
+"Indexes",
+"Top Gainers"
+]
+
+},
+
+
+
+history:{
+
+title:"History",
+
+items:[
+"Trades",
+"Deposits",
+"Withdrawals"
+]
+
+},
+
+
+
+settings:{
+
+title:"Settings",
+
+items:[
+"Account",
+"Security",
+"Notifications"
+]
+
+}
+
+
+};
+
+
+
+
+
+
+
+function changeMenu(section, button){
+
+
+document
+.querySelectorAll(".sidebar button")
+.forEach(btn=>{
+
+btn.classList.remove("active");
+
+});
+
+
+button.classList.add("active");
+
+// Dashboard פותח ישר Overview
+if(section === "dashboard"){
+    window.location="/overview";
+    return;
+}
+
+
+let menu = menus[section];
+
+
+
+document.getElementById("subTitle").innerHTML =
+menu.title;
+
+
+
+let box =
+document.getElementById("submenu");
+
+
+
+box.innerHTML="";
+
+
+
+menu.items.forEach(item=>{
+
+
+let btn =
+document.createElement("button");
+
+
+btn.innerHTML=item;
+
+if (item === "Overview") {
+        btn.onclick = function() {
+            window.location = "/overview";
+        };
+}
+
+
+if(section==="market" && item==="Stocks"){
+
+btn.onclick=loadStocks;
+
+}
+
+if(item==="My Stocks"){
+
+window.location="/portfolio";
+
+}
+
+
+else if(item==="Crypto"){
+
+
+btn.onclick=function(){
+
+window.location="/charts/BTC-USD";
+
+};
+
+
+}
+
+
+
+else if(item==="Indexes"){
+
+
+btn.onclick=function(){
+
+window.location="/charts/SPY";
+
+};
+
+
+}
+
+
+
+box.appendChild(btn);
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+function loadStocks(){
+
+
+let box =
+document.getElementById("submenu");
+
+
+
+box.innerHTML="Loading stocks...";
+
+
+
+fetch("/api/stocks")
+
+.then(response=>response.json())
+
+.then(stocks=>{
+
+
+box.innerHTML="";
+
+
+stocks.forEach(symbol=>{
+
+
+let btn =
+document.createElement("button");
+
+
+
+btn.innerHTML=symbol;
+
+
+
+btn.onclick=function(){
+
+window.location="/charts/"+symbol;
+
+};
+
+
+
+box.appendChild(btn);
+
+
+
+});
+
+
+})
+
+.catch(error=>{
+
+
+console.log(error);
+
+
+box.innerHTML="Error loading stocks";
+
+
+});
+
+
+}
+
+
+
+fetch("/home")
+.then(response => response.text())
+.then(html => {
+    document.getElementById("page-content").innerHTML = html;
+});
+
+
+
+
+
+
+</script>
+
+
+</body>
+
+</html>

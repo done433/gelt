@@ -1,0 +1,176 @@
+כדי לראות את זה בצורה של זמן ומחיר, אפשר להשתמש ב־jq:
+
+
+
+
+jq -r '
+.chart.result[0] |
+.timestamp as $t |
+.indicators.quote[0].close as $c |
+range(0; $t|length) |
+"\($t[.])  \($c[.])"
+' AAPL_20260720_234722.json
+
+
+
+
+
+
+
+jq -r '
+.chart.result[0] |
+.timestamp as $t |
+.indicators.quote[0].close as $c |
+range(0; $t|length) |
+"\($t[.])  \($c[.])"
+' AAPL_20260720_234722.json | while read ts price; do
+    date -d @$ts "+%Y-%m-%d %H:%M  $price"
+done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+curl -s -H "User-Agent: Mozilla/5.0" "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?range=1mo&interval=5m" >> apple
+
+
+
+
+
+
+
+
+
+
+
+
+
+#####maximum
+
+curl -s -H "User-Agent: Mozilla/5.0" "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?range=1mo&interval=5m" 
+
+18 curl -s -H "User-Agent: Mozilla/5.0"   "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?range=6wk&interval=5m"
+
+
+curl -s -H "User-Agent: Mozilla/5.0"  "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?range=8wk&interval=5m"  
+
+ curl -s -H "User-Agent: Mozilla/5.0"   "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?range=60d&interval=5m"
+
+curl -s -H "User-Agent: Mozilla/5.0"   "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?range=2y&interval=1h"  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+curl -s -H "User-Agent: Mozilla/5.0" \                                                                                                                 .env
+"https://query1.finance.yahoo.com/v1/finance/search?q=^" \
+| jq '.quotes[] | select(.quoteType=="INDEX")'
+
+
+
+
+
+
+url -s -H "User-Agent: Mozilla/5.0" \                                                                                                                 .env
+"https://query1.finance.yahoo.com/v1/finance/search?q=^&quotesCount=100"
+
+
+
+
+
+curl -s -H "User-Agent: Mozilla/5.0" \                                                                                                                 .env
+"https://query1.finance.yahoo.com/v1/finance/search?q=%5E&quotesCount=100" \
+| jq '.'                                       
+
+
+
+
+
+
+
+cat symbols.txt | grep -v '^[[:space:]]*$' | xargs -P 10 -I {} bash -c '
+    SYMBOL="{}"
+    TIME=$(date +"%Y%m%d_%H%M%S")
+    FILE="output/${SYMBOL}_${TIME}.json"
+    mkdir -p output
+    curl --socks5-hostname 127.0.0.1:9050 -s \
+      -H "User-Agent: Mozilla/5.0" \
+      "https://query1.finance.yahoo.com/v8/finance/chart/${SYMBOL}?range=60d&interval=5m" \
+      -o "$FILE"
+    echo "נשמר: $FILE"
+    sleep 2
+'
+
+
+
+
+
+
+
+
+
+#!/bin/bash
+
+while IFS= read -r SYMBOL; do
+    [ -z "$SYMBOL" ] && continue
+
+    echo "===== $SYMBOL ====="
+
+    curl -s \
+      -H "User-Agent: Mozilla/5.0" \
+      "https://query1.finance.yahoo.com/v8/finance/chart/${SYMBOL}?range=60d&interval=5m"
+
+    echo
+done < symbols.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NOW=$(date +%s)
+START=$((NOW - 90*24*60*60))
+
+curl -s \
+"https://query1.finance.yahoo.com/v8/finance/chart/AAPL?period1=$START&period2=$NOW&interval=5m"

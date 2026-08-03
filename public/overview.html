@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEMO EXCHANGE Overview</title>
+    <link rel="stylesheet" href="/static/overview.css">
+</head>
+
+<body>
+
+    <div class="cnc-stk">
+        <div class="cnc-stk-block">
+            <header class="cnc-stk-header">
+                <div>
+                    <div class="cnc-stk-logo">
+                        DEMO EXCHANGE
+                    </div>
+                    <div class="cnc-stk-user">
+                        👤 {{username}}
+                    </div>
+                </div>
+                <div class="live-time" id="live-time">
+                    Loading...
+                </div>
+            </header>
+
+            <div class="cnc-stk-title">
+                Overview Dashboard
+            </div>
+
+            <div class="summary">
+                <div>
+                    <span>PORTFOLIO BALANCE</span>
+                    <strong id="portfolio-balance">Loading...</strong>
+                </div>
+                <div>
+                    <span>ACTIVE POSITIONS</span>
+                    <strong id="positions">0</strong>
+                </div>
+                <div>
+                    <span>AVAILABLE CASH</span>
+                    <strong id="cash">Loading...</strong>
+                </div>
+                <div>
+                    <span>TODAY PROFIT</span>
+                    <strong class="green" id="today-profit">Loading...</strong>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="cnc-card performance-card" style="--color:#22c55e;">
+                    <div class="cnc-card-head">
+                        <span>PORTFOLIO PERFORMANCE</span>
+                        <span class="status">LIVE</span>
+                    </div>
+                    <div class="price green" id="performance-total-profit">
+                        Loading...
+                    </div>
+                    <div class="chart">
+                        <svg viewBox="0 0 320 100">
+                            <polyline points="0,80 40,70 80,75 120,50 160,60 210,35 260,45 320,15" />
+                        </svg>
+                    </div>
+                    <div class="ohlc">
+                        <div>
+                            <span>7 DAYS</span>
+                            <strong>+2.4%</strong>
+                        </div>
+                        <div>
+                            <span>MONTH</span>
+                            <strong>+8.7%</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cnc-card" style="--color:#00d4ff;">
+                    <div class="cnc-card-head">
+                        <span>PORTFOLIO ALLOCATION</span>
+                        <span class="status">RISK</span>
+                    </div>
+                    <div class="pie-area">
+                        <div class="pie-chart"></div>
+                    </div>
+                    <div class="legend" id="pie-legend">
+                        <div>Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="cnc-card" style="--color:#7c6af7;">
+                    <div class="cnc-card-head">
+                        <span>ACCOUNT HEALTH</span>
+                        <span class="status" id="health-status-badge">GOOD</span>
+                    </div>
+                    <div class="health">
+                        <h2 id="health-icon-text">🟢 Excellent</h2>
+                        <p>Risk Level: <strong id="health-risk">Medium</strong></p>
+                        <p>Diversification: <strong id="health-div">0%</strong></p>
+                        <p>Cash Ratio: <strong id="health-cash">0%</strong></p>
+                    </div>
+                </div>
+
+                <div class="cnc-card" style="--color:#ff8668;">
+                    <div class="cnc-card-head">
+                        <span>MARKET STATUS</span>
+                        <span class="status">OPEN</span>
+                    </div>
+                    <div class="market-box">
+                        <div>NASDAQ <strong class="green">+0.82%</strong></div>
+                        <div>S&P 500 <strong class="green">+0.45%</strong></div>
+                        <div>DOW <strong class="green">+0.21%</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="cnc-card" style="--color:#22c55e;">
+                    <div class="cnc-card-head">
+                        <span>TOP PERFORMERS</span>
+                    </div>
+                    <div id="winners-list">
+                        <div class="list-item">Loading...</div>
+                    </div>
+                </div>
+
+                <div class="cnc-card" style="--color:#ef4444;">
+                    <div class="cnc-card-head">
+                        <span>BIGGEST LOSERS</span>
+                    </div>
+                    <div id="losers-list">
+                        <div class="list-item">No losing positions</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cnc-card activity" style="--color:#00d4ff;">
+                <div class="cnc-card-head">
+                    <span>RECENT ACTIVITY</span>
+                </div>
+              
+                <div id="activity-list">
+                  <div class="list-item">
+                             Loading...
+                             </div>
+                  </div>
+
+            </div>
+
+            <div class="quick-actions">
+                <a href="/dashboard">BUY / SELL</a>
+                <a href="/portfolio">PORTFOLIO</a>
+                <a href="/market">MARKET</a>
+                <a href="/history">HISTORY</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function updateTime() {
+            document.getElementById("live-time").innerHTML = new Date().toUTCString();
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        let cashBalance = 0;
+        let portfolio = [];
+
+        Promise.all([
+            fetch("/api/balance").then(r => r.json()),
+            fetch("/api/portfolio/details").then(r => r.json())
+        ])
+        .then(([balanceData, portfolioData]) => {
+            cashBalance = Number(balanceData.balance || 0);
+            
+            // סינון רק של מניות שבאמת יש להן ערך גדול מ-0 (מונע הצגת אפסים כמו AMGN)
+            portfolio = (portfolioData || []).filter(stock => Number(stock.current_value) > 0);
+
+            document.getElementById("cash").innerHTML =
+                "$" + cashBalance.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+            calculateOverview();
+        })
+        .catch(err => {
+            console.error("Data loading error:", err);
+        });
+
+        function calculateOverview() {
+            let totalStockValue = 0;
+            let totalProfit = 0;
+
+            portfolio.forEach(stock => {
+                totalStockValue += Number(stock.current_value || 0);
+                totalProfit += Number(stock.profit || 0);
+            });
+
+            let totalPortfolio = cashBalance + totalStockValue;
+
+            document.getElementById("portfolio-balance").innerHTML =
+                "$" + totalPortfolio.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+            document.getElementById("positions").innerHTML = portfolio.length;
+
+            let profitFormatted = (totalProfit >= 0 ? "+" : "-") + "$" + Math.abs(totalProfit).toFixed(2);
+            document.getElementById("today-profit").innerHTML = profitFormatted;
+            
+            let perfElement = document.getElementById("performance-total-profit");
+            perfElement.innerHTML = profitFormatted;
+            perfElement.className = "price " + (totalProfit >= 0 ? "green" : "red");
+
+            // חישוב מזומן אמיתי מתוך סך הכל התיק
+            let cashRatio = totalPortfolio > 0 ? (cashBalance / totalPortfolio) * 100 : 0;
+            let diversification = calculateDiversification(totalStockValue);
+            let risk = calculateRisk(cashRatio);
+
+            document.getElementById("health-icon-text").innerHTML = risk.icon + " " + risk.text;
+            document.getElementById("health-risk").innerHTML = risk.level;
+            document.getElementById("health-div").innerHTML = diversification.toFixed(0) + "%";
+            document.getElementById("health-cash").innerHTML = cashRatio.toFixed(1) + "%";
+            document.getElementById("health-status-badge").innerHTML = risk.text.toUpperCase();
+
+            createPie(totalPortfolio);
+            createRanking();
+        }
+
+        function calculateDiversification(totalStockValue) {
+            if (portfolio.length === 0 || totalStockValue === 0) return 0;
+            let values = portfolio.map(stock => Number(stock.current_value || 0));
+            let biggest = Math.max(...values);
+            let concentration = (biggest / totalStockValue) * 100;
+            return Math.max(0, 100 - concentration);
+        }
+
+        function calculateRisk(cashRatio) {
+            if (cashRatio > 35) {
+                return { icon: "🟢", text: "Excellent", level: "Low" };
+            }
+            if (cashRatio > 15) {
+                return { icon: "🟡", text: "Good", level: "Medium" };
+            }
+            return { icon: "🔴", text: "Risky", level: "High" };
+        }
+
+        function createPie(totalPortfolio) {
+            let colors = ["#3b82f6", "#22c55e", "#7c6af7", "#ff8668", "#ffd166"];
+            let gradient = [];
+            let current = 0;
+            let legendHTML = "";
+
+            if (totalPortfolio <= 0) {
+                document.querySelector(".pie-chart").style.background = "#e2e8f0";
+                document.getElementById("pie-legend").innerHTML = "<div>No data</div>";
+                return;
+            }
+
+            let sortedPortfolio = [...portfolio].sort((a, b) => Number(b.current_value) - Number(a.current_value));
+
+            // הצגת עד 5 נכסים מובילים בלבד בעוגה
+            sortedPortfolio.slice(0, 5).forEach((stock, index) => {
+                let currentVal = Number(stock.current_value || 0);
+                let percent = (currentVal / totalPortfolio) * 100;
+
+                gradient.push(`${colors[index]} ${current}% ${current + percent}%`);
+                current += percent;
+
+                legendHTML += `<div><i style="background:${colors[index]}; display:inline-block; width:10px; height:10px; border-radius:50%; margin-left:5px;"></i> ${stock.symbol} ${percent.toFixed(0)}%</div>`;
+            });
+
+            if (cashBalance > 0) {
+                let cashPercent = (cashBalance / totalPortfolio) * 100;
+                gradient.push(`#cbd5e1 ${current}% ${current + cashPercent}%`);
+                legendHTML += `<div><i style="background:#cbd5e1; display:inline-block; width:10px; height:10px; border-radius:50%; margin-left:5px;"></i> CASH ${cashPercent.toFixed(1)}%</div>`;
+            }
+
+            document.querySelector(".pie-chart").style.background = `conic-gradient(${gradient.join(",")})`;
+            document.getElementById("pie-legend").innerHTML = legendHTML;
+        }
+
+        function createRanking() {
+            let sortedByProfit = [...portfolio].sort((a, b) => Number(b.profit || 0) - Number(a.profit || 0));
+            let winners = sortedByProfit.filter(s => Number(s.profit) > 0).slice(0, 3);
+            let losers = [...portfolio].sort((a, b) => Number(a.profit || 0) - Number(b.profit || 0)).filter(s => Number(s.profit) < 0).slice(0, 3);
+
+            let winContainer = document.getElementById("winners-list");
+            let loseContainer = document.getElementById("losers-list");
+
+            if (winners.length > 0) {
+                winContainer.innerHTML = winners.map(stock => `
+                    <div class="list-item">
+                        ${stock.symbol}
+                        <strong class="green">+$${Number(stock.profit).toFixed(2)}</strong>
+                    </div>
+                `).join("");
+            } else {
+                winContainer.innerHTML = '<div class="list-item">No profitable positions</div>';
+            }
+
+            if (losers.length > 0) {
+                loseContainer.innerHTML = losers.map(stock => `
+                    <div class="list-item">
+                        ${stock.symbol}
+                        <strong class="red">-$${Math.abs(Number(stock.profit)).toFixed(2)}</strong>
+                    </div>
+                `).join("");
+            } else {
+                loseContainer.innerHTML = '<div class="list-item">No losing positions</div>';
+            }
+        }
+
+
+        loadRecentActivity();
+
+
+function loadRecentActivity(){
+
+    fetch("/api/history")
+    .then(response => response.json())
+    .then(data => {
+
+        let box = document.getElementById("activity-list");
+
+
+        if(!data || data.length === 0){
+
+            box.innerHTML =
+            `<div class="list-item">
+                No transactions yet
+             </div>`;
+
+            return;
+        }
+
+
+        box.innerHTML = data.slice(0,10).map(tx => {
+
+            let color =
+                tx.action === "BUY"
+                ? "green"
+                : "red";
+
+
+            return `
+            <div class="list-item">
+
+                <strong class="${color}">
+                    ${tx.action}
+                </strong>
+
+                ${tx.quantity} ${tx.symbol}
+
+                <span>
+                    $${Number(tx.price).toFixed(2)}
+                    |
+                    ${tx.time}
+                </span>
+
+            </div>
+            `;
+
+        }).join("");
+
+    })
+
+    .catch(error=>{
+        console.error(
+            "History error:",
+            error
+        );
+    });
+
+}
+    </script>
+
+</body>
+
+</html>

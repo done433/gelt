@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Market News</title>
+
+<link rel="stylesheet" href="news/news.css">
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    📈 Market News
+
+</header>
+
+
+
+<section class="news-container" id="news-container">
+
+    Loading...
+
+</section>
+
+
+
+<script src="news/news.js"></script>
+
+
+<script>
+
+async function loadNews(){
+
+    try {
+
+        const response = await fetch("/api/news");
+
+        const news = await response.json();
+
+
+        let html = "";
+
+
+        news.slice(0,6).forEach(article => {
+
+
+            html += `
+
+            <div class="news-card">
+
+
+                <h2>
+                    ${article.title}
+                </h2>
+
+
+                <p>
+                    ${article.content.substring(0,250)}...
+                </p>
+
+
+
+                <a 
+                href="${article.url}" 
+                target="_blank">
+
+                    Read full article
+
+                </a>
+
+
+            </div>
+
+            `;
+
+
+        });
+
+
+
+        document.getElementById(
+            "news-container"
+        ).innerHTML = html;
+
+
+
+    } catch(error){
+
+
+        document.getElementById(
+            "news-container"
+        ).innerHTML =
+        "Failed loading news";
+
+
+        console.log(error);
+
+
+    }
+
+
+}
+
+
+
+loadNews();
+
+
+</script>
+
+
+</body>
+
+</html>

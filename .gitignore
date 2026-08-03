@@ -1,0 +1,33 @@
+data/stocks.db
+data/stocks.db-gib
+
+
+__pycache__/
+*.pyc
+
+*.db
+*.db-shm
+*.db-wal
+
+
+
+
+
+#app/charts/__pycache__/chart_api.cpython-312.pyc
+#app/trading/__pycache__/trading_api.cpython-312.pyc
+#app/trading/__pycache__/trading_db.cpython-312.pyc
+#app/trading/__pycache__/trading_engine.cpython-312.pyc
+#app/users.db
+
+
+
+
+
+# Python Cache files
+#__pycache__/
+#*.pyc
+
+# Local Databases & Temporary DB files
+#*.db
+#*.db-shm
+#*.db-wal

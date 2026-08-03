@@ -1,0 +1,213 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+    radial-gradient(circle at top left, #243b55, transparent 40%),
+    radial-gradient(circle at bottom right, #41295a, transparent 40%),
+    #090909;
+
+    color:white;
+    font-family: Arial, sans-serif;
+}
+
+
+.chart-box {
+
+    margin:40px;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    backdrop-filter: blur(20px);
+
+    border:
+    1px solid rgba(255,255,255,.15);
+
+    box-shadow:
+    0 0 30px rgba(0,229,255,.15);
+
+}
+
+
+h1 {
+
+    color:#00e5ff;
+
+    text-shadow:
+    0 0 10px #00e5ff;
+
+}
+
+
+#chart {
+
+    width:100%;
+
+    height:450px;
+
+}
+
+
+/* =========================
+   TRADE PANEL
+========================= */
+
+.trade-box {
+    margin-top: 25px;
+    padding: 20px;
+    
+    background:
+    rgba(255,255,255,0.06);
+
+    border:
+    1px solid rgba(0,229,255,0.25);
+
+    border-radius: 18px;
+
+    backdrop-filter: blur(15px);
+
+    box-shadow:
+    0 0 25px rgba(0,229,255,0.12);
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    flex-wrap: wrap;
+}
+
+
+.trade-box h2 {
+
+    width:100%;
+
+    margin:0;
+
+    color:#00e5ff;
+
+    text-shadow:
+    0 0 8px #00e5ff;
+
+}
+
+
+.trade-box label {
+
+    color:#ddd;
+
+    font-size:18px;
+
+}
+
+
+
+#quantity {
+
+    width:100px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    border:1px solid rgba(255,255,255,.2);
+
+    background:#111;
+
+    color:white;
+
+    font-size:16px;
+
+}
+
+
+
+.trade-box button {
+
+
+    padding:12px 35px;
+
+
+    border-radius:14px;
+
+
+    border:none;
+
+
+    background:
+
+    linear-gradient(
+        135deg,
+        #00e5ff,
+        #0072ff
+    );
+
+
+    color:white;
+
+
+    font-size:18px;
+
+
+    font-weight:bold;
+
+
+    cursor:pointer;
+
+
+    box-shadow:
+
+    0 0 20px rgba(0,229,255,.5);
+
+    transition:.25s;
+
+}
+
+
+
+.trade-box button:hover {
+
+
+    transform:translateY(-3px);
+
+
+    box-shadow:
+
+    0 0 35px rgba(0,229,255,.8);
+
+}
+
+
+
+#message {
+
+    width:100%;
+
+    margin:10px 0 0;
+
+    color:#00ff99;
+
+    font-size:16px;
+
+}
+
+
+.price-box {
+    margin:15px 0;
+    font-size:22px;
+    color:#ddd;
+}
+
+#stock-price {
+    color:#00ff88;
+    font-weight:bold;
+    text-shadow:
+    0 0 10px #00ff88;
+}

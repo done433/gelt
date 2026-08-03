@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+DEMO EXCHANGE Portfolio
+</title>
+
+<link rel="stylesheet" href="/static/portfolio.css">
+
+</head>
+
+
+<body>
+
+
+<div class="cnc-stk">
+
+<div class="cnc-stk-block">
+
+
+<header class="cnc-stk-header">
+
+<div>
+
+<div class="cnc-stk-logo">
+DEMO EXCHANGE
+</div>
+
+
+<div class="cnc-stk-user">
+👤 {{username}}
+</div>
+
+
+</div>
+
+</header>
+
+
+
+<div class="cnc-stk-title">
+My Portfolio
+</div>
+
+
+
+
+<div class="summary">
+
+
+<div>
+
+<span>
+CASH BALANCE
+</span>
+
+<strong id="balance">
+Loading...
+</strong>
+
+</div>
+
+
+
+<div>
+
+<span>
+STOCK VALUE
+</span>
+
+<strong id="stock-value">
+Loading...
+</strong>
+
+</div>
+
+
+
+<div>
+
+<span>
+TOTAL PROFIT
+</span>
+
+<strong id="profit">
+Loading...
+</strong>
+
+</div>
+
+
+</div>
+
+
+
+
+<div id="stocks"></div>
+
+
+
+</div>
+
+</div>
+
+
+
+
+
+<script>
+
+
+let totalValue = 0;
+
+let totalProfit = 0;
+
+
+
+
+
+fetch("/api/balance")
+
+.then(r=>r.json())
+
+.then(data=>{
+
+
+document.getElementById("balance").innerHTML =
+
+"$" +
+
+Number(data.balance)
+.toLocaleString();
+
+
+});
+
+
+
+
+
+
+fetch("/api/portfolio/details")
+
+.then(r=>r.json())
+
+.then(data=>{
+
+
+let box =
+document.getElementById("stocks");
+
+
+
+data.forEach((stock,index)=>{
+
+
+totalValue += Number(stock.current_value);
+
+totalProfit += Number(stock.profit);
+
+
+
+
+let color=[
+
+"#22c55e",
+"#00d4ff",
+"#7c6af7",
+"#ff6b9d",
+"#ffd166"
+
+][index % 5];
+
+
+
+
+
+let points="";
+
+
+
+if(stock.history && stock.history.length > 1){
+
+
+let min=Math.min(...stock.history);
+
+let max=Math.max(...stock.history);
+
+
+
+stock.history.forEach((p,i)=>{
+
+
+let x =
+(i/(stock.history.length-1))*320;
+
+
+let y =
+80 -
+((p-min)/(max-min || 1))*70;
+
+
+
+points += `${x},${y} `;
+
+
+});
+
+
+}
+
+
+
+
+
+box.innerHTML += `
+
+
+
+<div class="cnc-card"
+
+style="--color:${color}">
+
+
+
+
+
+<div class="cnc-card-head">
+
+
+<span>
+
+${stock.symbol} · NASDAQ
+
+</span>
+
+
+<span class="status">
+
+● OPEN
+
+</span>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="price">
+
+$${Number(stock.current_price)
+
+.toLocaleString(
+
+undefined,
+
+{
+
+minimumFractionDigits:2,
+
+maximumFractionDigits:2
+
+}
+
+)}
+
+</div>
+
+
+
+
+
+
+
+<div class="chart">
+
+
+<svg viewBox="0 0 320 80">
+
+
+<polyline
+
+points="${points}"
+
+fill="none"
+
+stroke="var(--color)"
+
+stroke-width="3"
+
+stroke-linecap="round"
+
+/>
+
+
+</svg>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="ohlc">
+
+
+
+
+
+<div>
+
+<span>
+SHARES
+</span>
+
+<strong>
+${stock.quantity}
+</strong>
+
+</div>
+
+
+
+
+
+<div>
+
+<span>
+BOUGHT
+</span>
+
+<strong>
+${stock.bought_time || "Unknown"}
+</strong>
+
+</div>
+
+
+
+
+
+<div>
+
+<span>
+BUY PRICE
+</span>
+
+<strong>
+
+$${Number(stock.buy_price)
+.toFixed(2)}
+
+</strong>
+
+</div>
+
+
+
+
+
+<div>
+
+<span>
+VALUE
+</span>
+
+<strong>
+
+$${Number(stock.current_value)
+.toFixed(2)}
+
+</strong>
+
+</div>
+
+
+
+
+
+<div>
+
+<span>
+PROFIT
+</span>
+
+
+<strong class="${stock.profit >= 0 ? "green":"red"}">
+
+
+${stock.profit >= 0 ? "+" : "-"}
+
+$${Math.abs(stock.profit)
+.toFixed(2)}
+
+
+</strong>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+<button
+
+class="close-position"
+
+onclick="closePosition('${stock.symbol}')">
+
+CLOSE POSITION
+
+</button>
+
+
+
+
+
+</div>
+
+
+
+`;
+
+
+
+});
+
+
+
+
+
+document.getElementById("stock-value").innerHTML =
+
+"$" + totalValue.toFixed(2);
+
+
+
+
+
+let profitBox =
+document.getElementById("profit");
+
+
+
+profitBox.innerHTML =
+
+(totalProfit >= 0 ? "+" : "-")
+
++
+
+"$"
+
++
+
+Math.abs(totalProfit)
+.toFixed(2);
+
+
+
+profitBox.className =
+
+totalProfit >= 0
+?
+"green"
+:
+"red";
+
+
+
+})
+
+
+
+.catch(err=>{
+
+console.error(
+"Portfolio error:",
+err
+);
+
+});
+
+
+
+
+
+
+
+
+
+function closePosition(symbol){
+
+
+
+if(!confirm(
+
+"Close position for " + symbol + "?"
+
+)){
+
+return;
+
+}
+
+
+
+
+
+fetch("/api/sell",{
+
+
+method:"POST",
+
+
+headers:{
+
+
+"Content-Type":"application/json"
+
+
+},
+
+
+
+body:JSON.stringify({
+
+symbol:symbol
+
+})
+
+
+})
+
+
+
+.then(r=>r.json())
+
+.then(data=>{
+
+
+if(data.error){
+
+
+alert(data.error);
+
+
+return;
+
+
+}
+
+
+
+alert(
+
+"Position closed successfully"
+
+);
+
+
+
+location.reload();
+
+
+
+})
+
+
+
+.catch(err=>{
+
+
+console.error(err);
+
+
+alert(
+"Server error"
+);
+
+
+});
+
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
+
