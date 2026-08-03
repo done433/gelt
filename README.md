@@ -1,93 +1,253 @@
-# site
+# 📈 Yahoo Finance Stock Data Collection and Paper Trading Platform
 
+## Overview
 
+This project is a complete end-to-end stock market platform designed to collect, process, store, and visualize financial market data.
 
-## Getting started
+It was developed from the ground up as a modular system that combines data engineering, backend development, automation, database optimization, and a modern web interface.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+The platform includes:
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- Automated stock data collection from Yahoo Finance
+- JSON-based data storage
+- Automatic JSON-to-SQL conversion
+- Duplicate detection and prevention during imports
+- Automatic database index creation for optimized performance
+- Daily automated updates using a Systemd service
+- A modern web application
+- A paper trading (virtual trading) platform
+- Interactive charts and market analytics
+- Financial news integration
+- A personal assistant for portfolio management and market exploration
 
-## Add your files
+---
 
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+# Project Goals
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/done433/site.git
-git branch -M main
-git push -uf origin main
-```
+The primary goal of this project is to provide a fully automated system capable of:
 
-## Integrate with your tools
+- Collecting up-to-date stock market data
+- Storing large datasets efficiently
+- Providing fast database queries
+- Supporting historical market analysis
+- Presenting financial information through a clean and intuitive web interface
 
-* [Set up project integrations](https://gitlab.com/done433/site/-/settings/integrations)
+The project demonstrates the complete workflow, from data acquisition to visualization.
 
-## Collaborate with your team
+---
 
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+# Data Collection
 
-## Test and Deploy
+The platform automatically retrieves stock information from Yahoo Finance.
 
-Use the built-in continuous integration in GitLab.
+Collected information includes:
 
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
+- Current price
+- Open price
+- Previous close
+- Daily high
+- Daily low
+- Trading volume
+- Market capitalization
+- Price-to-Earnings ratio
+- Dividend information
+- Company sector
+- Industry classification
+- Company profile
+- Additional financial statistics
 
-***
+Each company's data is stored as a JSON document, allowing easy backups, processing, and future imports.
 
-# Editing this README
+---
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+# Automated Daily Updates
 
-## Suggestions for a good README
+The project includes a Systemd service responsible for automating data collection.
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+The service:
 
-## Name
-Choose a self-explaining name for your project.
+- Starts automatically with the operating system
+- Executes the data collection scripts every day
+- Refreshes all market information
+- Requires no manual intervention
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+This ensures that the local database remains synchronized with the latest available market data.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+---
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+# JSON to SQL Conversion
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+The project contains a dedicated importer that converts the collected JSON files into an SQL database.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+Features include:
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+- Automatic parsing of thousands of JSON files
+- Automatic table creation
+- Automatic index generation
+- Duplicate detection
+- Duplicate prevention
+- Safe repeated imports without creating duplicate records
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+Because of this approach, the importer can be executed multiple times while maintaining database integrity.
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+---
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+# Web Application
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+The platform includes a complete web application built with Python, Flask, Docker, and Nginx.
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+Main features include:
 
-## License
-For open source projects, say how it is licensed.
+- Stock search
+- Individual company pages
+- Financial statistics
+- Interactive charts
+- Market news
+- Fast navigation
+- Responsive interface
+- Database integration
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Deployment is handled using Docker Compose with separate services for:
+
+- Flask application
+- Nginx web server
+
+This architecture makes deployment, maintenance, and scaling straightforward.
+
+---
+
+# Paper Trading Platform
+
+The project includes a fully functional paper trading system that simulates real-world investing.
+
+Users can:
+
+- Buy stocks
+- Sell stocks
+- Build a virtual investment portfolio
+- Track profits and losses
+- Monitor portfolio value
+- Analyze trading performance over time
+
+This allows users to experiment with investment strategies without risking real money.
+
+---
+
+# Personal Assistant
+
+The platform includes a personal assistant designed to simplify navigation and market analysis.
+
+The assistant helps users:
+
+- Access stock information quickly
+- Explore financial data
+- Navigate platform features
+- Retrieve relevant market information efficiently
+
+---
+
+# Financial News
+
+The application integrates financial news to provide additional market context.
+
+This allows users to better understand events that may influence stock prices and market behavior.
+
+---
+
+# Performance
+
+The platform was designed with performance and scalability in mind.
+
+Special attention was given to:
+
+- Fast database queries
+- Automatic indexing
+- Duplicate prevention
+- Efficient memory usage
+- Reliable automated updates
+
+These optimizations allow the platform to handle large datasets efficiently.
+
+---
+
+# Project Structure
+
+The project is organized into multiple independent components:
+
+- Data collection engine
+- JSON data repository
+- JSON-to-SQL conversion system
+- SQL database
+- Flask web application
+- Nginx reverse proxy
+- Docker Compose configuration
+- Systemd automation services
+- Public web assets
+- News module
+- Paper trading engine
+- Charts and analytics
+- Personal assistant
+
+This modular design makes the project easier to maintain and extend.
+
+---
+
+# Technologies Used
+
+The project is built using the following technologies:
+
+- Python
+- Flask
+- SQLite / SQL
+- JSON
+- Docker
+- Docker Compose
+- Nginx
+- Linux
+- Systemd
+- HTML
+- CSS
+- JavaScript
+
+---
+
+# Purpose
+
+This project was created as a practical demonstration of building a complete financial data platform.
+
+It combines multiple areas of software engineering, including:
+
+- Data collection
+- Data engineering
+- Database design
+- Backend development
+- Web development
+- Infrastructure automation
+- Containerization
+
+The system demonstrates how to build a complete pipeline that starts with collecting financial data, processes and stores it efficiently, and finally presents it through a modern, responsive web interface.
+
+---
+
+# Future Improvements
+
+Potential future enhancements include:
+
+- User authentication and account management
+- Watchlists
+- Real-time market data support
+- Additional financial indicators
+- REST API
+- Portfolio performance analytics
+- Email notifications
+- Mobile-friendly interface improvements
+- AI-assisted market analysis
+- Support for multiple database engines
+
+---
+
+# License
+
+This project is intended for educational and research purposes.
+
+Please review Yahoo Finance's terms of service before using this software to collect or redistribute financial data.
