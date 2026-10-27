@@ -1,3 +1,21 @@
+---
+## License
+
+Released under the **MIT License** — use it, copy it, change it, share it, even
+commercially, no strings attached beyond keeping the copyright notice. See
+[LICENSE](LICENSE) for the full text.
+
+---
+
+
+## Disclaimer
+
+> **NB:** This project is intended for **educational and research purposes only.**
+>
+> It is **not** financial advice. Please review
+> [Yahoo Finance's Terms of Service](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html)
+> before using this software to collect or redistribute financial data.
+
 # 📈 Yahoo Finance Stock Data Collection and Paper Trading Platform
 
 ## Overview
@@ -246,8 +264,3 @@ Potential future enhancements include:
 
 ---
 
-# License
-
-This project is intended for educational and research purposes.
-
-Please review Yahoo Finance's terms of service before using this software to collect or redistribute financial data.
